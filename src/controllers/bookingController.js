@@ -48,6 +48,7 @@ async function createBooking(req, res) {
 
     if (!REQUIRE_OTP) {
       const booking = await Booking.create({ name, tour, message, peopleCount, phone });
+      console.info("[bookings] Новая бронь сохранена");
       await tryNotifyManager(booking);
       return res.status(201).json({ success: true, needsVerification: false, booking: publicView(booking) });
     }
@@ -59,6 +60,7 @@ async function createBooking(req, res) {
       name, tour, message, peopleCount, phone,
       otpCode, otpExpiresAt, otpAttempts: 0, phoneVerified: false,
     });
+    console.info("[bookings] Новая бронь сохранена; ожидает SMS-подтверждения");
 
     const smsText = `TourCo: vash kod podtverzhdeniya - ${otpCode}. Kod deystvitelen ${OTP_TTL_MINUTES} minut.`;
 
@@ -163,11 +165,36 @@ async function listBookings(req, res) {
 }
 
 async function adjustSeats(tourTitle, delta) {
-  if (!delta) return;
-  const tour = await Tour.findOne({ title: tourTitle });
-  if (!tour || !tour.totalSeats) return; // места не отслеживаются у этого тура
+  if (!delta) return { tracked: false, available: true };
+
+  const filter = { $or: [{ title: tourTitle }, { titleEn: tourTitle }] };
+  if (delta > 0) {
+    const result = await Tour.updateOne(
+      {
+        ...filter,
+        totalSeats: { $gt: 0 },
+        $expr: {
+          $lte: [
+            { $add: [{ $ifNull: ["$bookedSeats", 0] }, delta] },
+            "$totalSeats",
+          ],
+        },
+      },
+      { $inc: { bookedSeats: delta } }
+    );
+
+    if (result.modifiedCount > 0) return { tracked: true, available: true };
+
+    const tour = await Tour.findOne(filter);
+    if (!tour || !tour.totalSeats) return { tracked: false, available: true };
+    return { tracked: true, available: false };
+  }
+
+  const tour = await Tour.findOne(filter);
+  if (!tour || !tour.totalSeats) return { tracked: false, available: true };
   tour.bookedSeats = Math.min(tour.totalSeats, Math.max(0, (tour.bookedSeats || 0) + delta));
   await tour.save();
+  return { tracked: true, available: true };
 }
 
 async function updateBookingStatus(req, res) {
@@ -183,11 +210,16 @@ async function updateBookingStatus(req, res) {
     if (!booking) return res.status(404).json({ success: false, error: "Бронь не найдена" });
 
     const wasApproved = booking.status === "approved";
-    booking.status = status;
 
     // Считаем места занятыми только пока бронь в статусе "одобрена"
-    if (!wasApproved && status === "approved") await adjustSeats(booking.tour, booking.peopleCount);
+    if (!wasApproved && status === "approved") {
+      const seats = await adjustSeats(booking.tour, booking.peopleCount);
+      if (!seats.available) {
+        return res.status(409).json({ success: false, error: "Недостаточно свободных мест для одобрения брони" });
+      }
+    }
     if (wasApproved && status !== "approved") await adjustSeats(booking.tour, -booking.peopleCount);
+    booking.status = status;
 
     let sms = { attempted: false };
     if (status === "approved" && !wasApproved && SMS_ON_APPROVE) {

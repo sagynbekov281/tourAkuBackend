@@ -31,7 +31,7 @@ npm run dev
 
 Проверка: `http://localhost:5000/health` → `{"ok":true,...}`.
 
-Админка: `http://localhost:5000/admin.html` → вход по `ADMIN_PASSWORD` → вкладка «Туры» → «Загрузить примеры» (появится 6 туров по Кыргызстану), то же на вкладке «Гиды».
+Админка: `http://localhost:5000/admin.html` → вход по `ADMIN_PASSWORD` → вкладка «Туры» → «Загрузить примеры» (появится 6 туров по Кыргызстану), то же на вкладке «Гиды». Адрес `/admin.htm` также перенаправляется на `/admin.html`.
 
 ## Подключение фронтенда
 
@@ -40,7 +40,7 @@ npm run dev
 VITE_API_URL=http://localhost:5000
 ```
 
-После деплоя backend на Render — впиши туда его настоящий адрес и не забудь прописать `CLIENT_ORIGIN` в `.env` backend.
+После деплоя backend на Render — впиши его адрес в `VITE_API_URL` в настройках проекта Vercel (**Settings → Environment Variables**), затем создай новый deployment. Завершающий `/` допустим: frontend удаляет его перед добавлением API-пути. В Render задай `CLIENT_ORIGIN=https://tour-aku.vercel.app` (можно также добавить локальный origin через запятую); backend нормализует завершающие `/`. Этот production-origin также разрешён в коде по умолчанию.
 
 ## Структура
 

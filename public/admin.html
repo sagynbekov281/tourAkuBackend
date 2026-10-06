@@ -3,91 +3,158 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>TourCo — Админка</title>
+<title>khan-tengti — Админка</title>
 <style>
-  :root { --bg:#F8FAFC; --card:#FFFFFF; --border:#E2E8F0; --accent:#16A34A; --text:#0F172A; --muted:#64748B; }
+  :root { color-scheme:dark; --bg:#090B18; --sidebar:#0D1021; --card:#11152A; --raised:#171B34; --border:#252B49; --accent:#665CE8; --accent-soft:#292545; --text:#F5F6FF; --muted:#8991B4; --green:#20C969; --red:#EF5969; }
   * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-  body { margin:0; font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif; background:var(--bg); color:var(--text); padding:20px; }
+  body { margin:0; min-height:100vh; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif; background:var(--bg); color:var(--text); }
   .hidden { display:none !important; }
-  h1 { font-size:19px; margin:0; }
-  input, select, textarea, button { background:#F8FAFC; border:1px solid var(--border); color:var(--text); border-radius:8px; padding:9px 12px; font-size:14px; font-family:inherit; }
+  h1 { font-size:22px; margin:0; letter-spacing:-.025em; }
+  input, select, textarea, button { background:var(--bg); border:1px solid var(--border); color:var(--text); border-radius:9px; padding:10px 12px; font-size:14px; font-family:inherit; }
+  input::placeholder, textarea::placeholder { color:#737B9C; }
+  input:focus, select:focus, textarea:focus { outline:2px solid #665ce866; border-color:var(--accent); }
   textarea { width:100%; resize:vertical; }
-  button { background:var(--accent); color:#fff; border:none; cursor:pointer; font-weight:600; min-height:38px; }
-  button.secondary { background:transparent; border:1px solid var(--border); color:var(--muted); }
-  button.danger { background:#ef444433; color:#f87171; }
-  button.wa { background:#25D366; color:#062b12; }
-  button:hover { opacity:.85; }
-  .login { max-width:340px; width:100%; margin:12vh auto; background:var(--card); border:1px solid var(--border); border-radius:14px; padding:24px; display:flex; flex-direction:column; gap:12px; }
-  .login h1 { margin-bottom:6px; }
+  button { background:var(--accent); color:#fff; border:none; cursor:pointer; font-weight:650; min-height:40px; transition:filter .15s,transform .15s; }
+  button.secondary { background:transparent; border:1px solid var(--border); color:#D5D9EF; }
+  button.danger { background:#EF59691a; border:1px solid #EF596944; color:#FF8290; }
+  button.wa { background:var(--green); color:#052714; }
+  button:hover { filter:brightness(1.12); }
+  button:active { transform:translateY(1px); }
+  .login { max-width:390px; width:calc(100% - 32px); margin:12vh auto; background:var(--sidebar); border:1px solid var(--border); border-radius:16px; padding:28px; display:flex; flex-direction:column; gap:14px; box-shadow:0 24px 80px #0005; }
+  .login h1 { margin-bottom:4px; }
   .login input, .login button { width:100%; }
-  .err { color:#f87171; font-size:13px; min-height:16px; }
-  header { display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:18px; }
-  .tabs { display:flex; gap:6px; flex-wrap:wrap; flex:1; min-width:0; }
-  .tabs button { background:transparent; border:1px solid var(--border); color:var(--muted); font-size:13px; padding:8px 12px; }
-  .tabs button.on { background:var(--accent); color:#fff; border-color:var(--accent); }
-  .bar { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:14px; }
-  .bar input { flex:1; min-width:160px; }
-  .chk { display:flex; align-items:center; gap:8px; color:var(--muted); font-size:13px; cursor:pointer; }
-  .chk input { min-height:auto; }
-  .table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; border-radius:12px; }
-  table { width:100%; min-width:640px; border-collapse:collapse; background:var(--card); font-size:13px; }
-  th, td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--border); vertical-align:middle; white-space:nowrap; }
-  th { color:var(--muted); font-size:11px; text-transform:uppercase; }
+  .err { color:#FF8290; font-size:13px; min-height:16px; }
+  .app-shell { min-height:100vh; }
+  .sidebar { position:fixed; z-index:30; inset:0 auto 0 0; width:264px; background:var(--sidebar); border-right:1px solid var(--border); padding:22px 15px 18px; display:flex; flex-direction:column; }
+  .brand { display:flex; align-items:center; gap:13px; padding:7px 10px 23px; border-bottom:1px solid var(--border); }
+  .brand-mark { width:42px; height:42px; display:grid; place-items:center; flex:none; border-radius:13px; background:linear-gradient(145deg,#7469F1,#5048C6); color:white; }
+  .brand-mark svg { width:29px; height:29px; }
+  .brand-name { font-size:16px; font-weight:750; letter-spacing:-.03em; }
+  .brand-caption { margin-top:4px; color:#8790B7; font-size:10px; letter-spacing:.1em; }
+  .nav-label { padding:25px 11px 10px; color:#7881A7; font-size:11px; font-weight:750; letter-spacing:.09em; }
+  .tabs { display:flex; flex-direction:column; gap:5px; }
+  .tabs button { min-height:48px; display:flex; align-items:center; gap:13px; padding:0 13px; background:transparent; border:1px solid transparent; border-radius:10px; color:#ADB4CD; text-align:left; font-size:14px; }
+  .tabs button.on { background:var(--accent-soft); border-color:#464078; color:#F4F3FF; }
+  .nav-icon { width:24px; display:inline-flex; align-items:center; justify-content:center; color:#A8A3F4; font-size:19px; }
+  .sidebar-footer { margin-top:auto; padding:18px 11px 3px; border-top:1px solid var(--border); color:#828BAF; font-size:12px; }
+  .main-shell { min-height:100vh; margin-left:264px; }
+  .topbar { height:64px; display:flex; align-items:center; justify-content:flex-end; gap:12px; padding:0 32px; border-bottom:1px solid #1A1E34; background:#0B0D1A; }
+  .topbar-title { display:none; margin-right:auto; font-size:14px; font-weight:700; }
+  .menu-toggle { display:none; width:42px; min-height:42px; padding:8px; background:transparent; border:1px solid var(--border); font-size:20px; }
+  .main-content { max-width:1600px; margin:0 auto; padding:30px 34px 48px; }
+  .page-heading { display:flex; align-items:flex-end; justify-content:space-between; gap:16px; margin-bottom:24px; }
+  .eyebrow { margin:0 0 7px; color:#7E87AA; font-size:11px; font-weight:700; letter-spacing:.1em; }
+  #status { color:var(--muted); font-size:13px; margin:0 0 14px; }
+  .bar { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:15px; }
+  .bar input:not([type=checkbox]) { flex:1; min-width:180px; }
+  .chk { display:flex; align-items:center; gap:9px; color:var(--muted); font-size:13px; cursor:pointer; }
+  .chk input { min-height:auto; accent-color:var(--accent); }
+  .table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; border-radius:13px; border:1px solid #1C213B; }
+  table { width:100%; min-width:720px; border-collapse:collapse; background:var(--card); font-size:13px; }
+  th, td { text-align:left; padding:13px 12px; border-bottom:1px solid #222741; vertical-align:middle; white-space:nowrap; }
+  th { color:#828BAF; background:#15192E; font-size:11px; font-weight:700; letter-spacing:.045em; text-transform:uppercase; }
   tr:last-child td { border-bottom:none; }
-  .badge { display:inline-block; padding:3px 8px; border-radius:999px; font-size:11px; font-weight:600; }
-  .badge.pending, .badge.off { background:#2563EB22; color:#1D4ED8; }
-  .badge.approved, .badge.on { background:#22c55e22; color:#4ade80; }
-  .badge.rejected { background:#ef444422; color:#f87171; }
-  .badge.sale { background:#f59e0b22; color:#fbbf24; }
-  .actions { display:flex; gap:6px; flex-wrap:nowrap; }
-  .actions button { padding:6px 10px; font-size:12px; min-height:32px; }
+  .badge { display:inline-block; padding:4px 9px; border-radius:999px; font-size:11px; font-weight:650; }
+  .badge.pending, .badge.off { background:#665CE829; color:#B6B1FF; }
+  .badge.approved, .badge.on { background:#20C96920; color:#62E49A; }
+  .badge.rejected { background:#EF59691f; color:#FF8290; }
+  .badge.sale { background:#F3A72A20; color:#FFC86A; }
+  .actions { display:flex; gap:6px; flex-wrap:wrap; }
+  .actions button { padding:7px 10px; font-size:12px; min-height:34px; }
   s { color:var(--muted); }
-  #status { color:var(--muted); font-size:13px; margin-bottom:12px; }
-  .empty { padding:32px 16px; text-align:center; color:var(--muted); background:var(--card); border-radius:12px; }
-  .modal { position:fixed; inset:0; background:#04050Fcc; display:flex; align-items:flex-start; justify-content:center; padding:16px; overflow:auto; z-index:10; }
-  .box { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:20px; width:100%; max-width:560px; margin-top:4vh; }
+  .empty { padding:40px 16px; text-align:center; color:var(--muted); background:var(--card); border:1px solid #1C213B; border-radius:13px; }
+  .modal { position:fixed; inset:0; background:#04050Fbb; display:flex; align-items:flex-start; justify-content:center; padding:16px; overflow:auto; z-index:50; backdrop-filter:blur(5px); }
+  .box { background:var(--sidebar); border:1px solid var(--border); border-radius:14px; padding:20px; width:100%; max-width:560px; margin-top:4vh; box-shadow:0 24px 80px #0007; }
   .box h2 { margin:0 0 16px; font-size:16px; }
-  .box label { display:block; font-size:12px; color:var(--muted); margin-bottom:12px; }
+  .box label { display:block; font-size:12px; color:#A6AEC8; margin-bottom:12px; }
   .box label input:not([type=checkbox]), .box label select { width:100%; margin-top:4px; }
   .box label textarea { margin-top:4px; }
   .box label.chk { display:flex; color:var(--text); }
   .row { display:flex; gap:8px; margin-top:8px; flex-wrap:wrap; }
   .row button { flex:1; min-width:110px; }
 
-  @media (max-width: 640px) {
-    body { padding:12px; }
-    h1 { font-size:16px; width:100%; }
-    header { gap:8px; }
-    .tabs { order:3; width:100%; }
-    #logout { order:2; margin-left:auto; }
-    .box { padding:16px; margin-top:0; border-radius:12px 12px 0 0; align-self:flex-end; }
-    .modal { align-items:flex-end; padding:0; }
-    th, td { padding:8px 10px; font-size:12px; }
+  .sidebar-backdrop { display:none; }
+  @media (max-width: 900px) {
+    .sidebar { width:242px; }
+    .main-shell { margin-left:242px; }
+    .main-content { padding:26px 22px 40px; }
+    .topbar { padding:0 22px; }
+  }
+  @media (max-width: 700px) {
+    .sidebar { width:min(290px,84vw); transform:translateX(-102%); transition:transform .22s ease; box-shadow:18px 0 50px #0006; }
+    .app-shell.nav-open .sidebar { transform:translateX(0); }
+    .sidebar-backdrop { position:fixed; z-index:25; inset:0; display:block; background:#02030bbb; opacity:0; pointer-events:none; transition:opacity .22s; }
+    .app-shell.nav-open .sidebar-backdrop { opacity:1; pointer-events:auto; }
+    .main-shell { margin-left:0; }
+    .topbar { height:58px; justify-content:space-between; gap:9px; padding:0 14px; }
+    .topbar-title, .menu-toggle { display:flex; align-items:center; justify-content:center; }
+    .main-content { padding:23px 14px 36px; }
+    .page-heading { margin-bottom:19px; }
+    h1 { font-size:21px; }
+    .bar { align-items:stretch; flex-direction:column; gap:10px; }
+    .bar input:not([type=checkbox]) { width:100%; min-width:0; }
+    .chk { align-items:flex-start; line-height:1.5; }
+    .table-wrap { overflow:visible; border:0; }
+    table { min-width:0; border-collapse:separate; border-spacing:0 10px; background:transparent; }
+    thead { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
+    tbody { display:grid; gap:10px; }
+    tr { display:grid; gap:0; padding:4px 13px; background:var(--card); border:1px solid #222741; border-radius:12px; }
+    td { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; white-space:normal; padding:9px 0; border-bottom:1px solid #222741; text-align:right; overflow-wrap:anywhere; }
+    td::before { content:attr(data-label); flex:none; color:#858EAF; font-size:10px; font-weight:700; letter-spacing:.04em; text-align:left; text-transform:uppercase; }
+    td.actions { justify-content:flex-start; flex-wrap:wrap; padding:11px 0 7px; }
+    td.actions::before { display:none; }
+    .actions button { flex:1 1 auto; }
+    .box { padding:17px; margin-top:0; border-radius:14px; align-self:flex-end; max-height:92dvh; overflow:auto; }
+    .modal { align-items:flex-end; padding:10px; }
+  }
+  @media (max-width: 380px) {
+    .main-content { padding-left:11px; padding-right:11px; }
+    .actions button { width:100%; }
   }
 </style>
 </head>
 <body>
 
 <div id="login" class="login hidden">
-  <h1>IhsanAcademy</h1>
+  <div class="brand" style="padding:0 0 18px;border:0">
+    <div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><path d="M3 25.5 11.5 11l4.1 6.2 3.1-4.7L29 25.5H3Z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="m8.2 25.5 5.1-8.7 2.3 3.5 2.1-3.2 6.2 8.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div><div class="brand-name">khan-tengti</div><div class="brand-caption">ПАНЕЛЬ УПРАВЛЕНИЯ</div></div>
+  </div>
   <div style="color:var(--muted);font-size:13px">Вход в админ-панель</div>
   <input id="pwd" type="password" placeholder="Пароль" autocomplete="current-password" />
   <button id="loginBtn">Войти</button>
   <div id="loginErr" class="err"></div>
 </div>
 
-<div id="app" class="hidden">
-  <header>
-    <h1>TourCo — Админка</h1>
-    <div class="tabs">
-      <button data-tab="applications">Брони</button>
-      <button data-tab="courses">Туры</button>
-      <button data-tab="teachers">Гиды</button>
+<div id="app" class="app-shell hidden">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><path d="M3 25.5 11.5 11l4.1 6.2 3.1-4.7L29 25.5H3Z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="m8.2 25.5 5.1-8.7 2.3 3.5 2.1-3.2 6.2 8.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div><div class="brand-name">khan-tengti</div><div class="brand-caption">ПАНЕЛЬ УПРАВЛЕНИЯ</div></div>
     </div>
-    <button class="secondary" id="logout">Выйти</button>
-  </header>
-  <div id="status"></div>
-  <div id="content"></div>
+    <div class="nav-label">РАЗДЕЛЫ</div>
+    <nav class="tabs" aria-label="Разделы админки">
+      <button data-tab="applications"><span class="nav-icon" aria-hidden="true">▤</span>Брони</button>
+      <button data-tab="courses"><span class="nav-icon" aria-hidden="true">▧</span>Туры</button>
+      <button data-tab="teachers"><span class="nav-icon" aria-hidden="true">♙</span>Гиды</button>
+    </nav>
+    <div class="sidebar-footer">khan-tengti · Панель управления</div>
+  </aside>
+  <div id="sidebarBackdrop" class="sidebar-backdrop"></div>
+  <div class="main-shell">
+    <header class="topbar">
+      <button id="menuToggle" class="menu-toggle secondary" aria-label="Открыть меню" aria-expanded="false">☰</button>
+      <div class="topbar-title">khan-tengti · Админка</div>
+      <button class="secondary" id="logout">Выйти</button>
+    </header>
+    <main class="main-content">
+      <div class="page-heading">
+        <div><p class="eyebrow">ПАНЕЛЬ УПРАВЛЕНИЯ</p><h1 id="pageTitle">Брони</h1></div>
+      </div>
+      <div id="status" role="status" aria-live="polite"></div>
+      <div id="content"></div>
+    </main>
+  </div>
 </div>
 
 <div id="modal" class="modal hidden">
@@ -104,6 +171,8 @@
   const esc = (s) => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   const API = window.location.origin;
   const ENDPOINT = { applications: '/api/bookings', courses: '/api/admin/tours', teachers: '/api/admin/guides' };
+  const RESPONSE_KEY = { applications: 'bookings', courses: 'tours', teachers: 'guides' };
+  const TAB_LABEL = { applications: 'Брони', courses: 'Туры', teachers: 'Гиды' };
   const STATUS = { pending: 'ожидает', approved: 'одобрена', rejected: 'отклонена' };
   const LEVELS = [['easy','Лёгкий'],['medium','Средний'],['hard','Сложный']];
   const ICONS = [['mountain','Горы'],['water','Вода/озеро'],['tent','Юрта/кемпинг'],['rideshare','Внедорожник'],['snow','Зима/лыжи'],['plant','Природа/заповедник']];
@@ -183,6 +252,7 @@
   }
   function logout() {
     token = ''; localStorage.removeItem('ihsan_token');
+    closeNav();
     $('#app').classList.add('hidden'); $('#login').classList.remove('hidden');
   }
   function start() {
@@ -192,16 +262,26 @@
   $('#loginBtn').addEventListener('click', doLogin);
   $('#pwd').addEventListener('keydown', (e) => { if (e.key === 'Enter') doLogin(); });
   $('#logout').addEventListener('click', logout);
+  $('#menuToggle').addEventListener('click', () => setNavOpen(!$('#app').classList.contains('nav-open')));
+  $('#sidebarBackdrop').addEventListener('click', closeNav);
+
+  function setNavOpen(open) {
+    $('#app').classList.toggle('nav-open', open);
+    $('#menuToggle').setAttribute('aria-expanded', String(open));
+    $('#menuToggle').setAttribute('aria-label', open ? 'Закрыть меню' : 'Открыть меню');
+  }
+  function closeNav() { setNavOpen(false); }
 
   // ---- Вкладки ----
-  document.querySelectorAll('[data-tab]').forEach((b) => b.addEventListener('click', () => { tab = b.dataset.tab; load(); }));
+  document.querySelectorAll('[data-tab]').forEach((b) => b.addEventListener('click', () => { tab = b.dataset.tab; closeNav(); load(); }));
 
   async function load() {
     document.querySelectorAll('[data-tab]').forEach((b) => b.classList.toggle('on', b.dataset.tab === tab));
+    $('#pageTitle').textContent = TAB_LABEL[tab];
     $('#status').textContent = 'Загрузка...'; $('#content').innerHTML = '';
     try {
       const r = await api(ENDPOINT[tab]);
-      data[tab] = r[tab] || [];
+      data[tab] = r[RESPONSE_KEY[tab]] || [];
       $('#status').textContent = '';
       $('#content').innerHTML = tab === 'applications' ? renderApplications() : renderCatalog(tab);
     } catch (e) { $('#status').textContent = e.message; }
@@ -218,10 +298,10 @@
     const rows = data.applications.map((a) => {
       const decided = a.status !== 'pending';
       return `<tr>
-      <td>${esc(a.name)}</td><td>+${esc(a.phone)}</td><td>${esc(a.tour)}</td>
-      <td><span class="badge ${a.status}">${STATUS[a.status] || a.status}</span></td>
-      <td>${new Date(a.createdAt).toLocaleString('ru-RU')}</td>
-      <td class="actions">
+      <td data-label="Имя">${esc(a.name)}</td><td data-label="Телефон">+${esc(a.phone)}</td><td data-label="Тур">${esc(a.tour)}</td>
+      <td data-label="Статус"><span class="badge ${a.status}">${STATUS[a.status] || a.status}</span></td>
+      <td data-label="Дата">${new Date(a.createdAt).toLocaleString('ru-RU')}</td>
+      <td class="actions" data-label="Действия">
         ${decided ? '' : `<button data-act="approve" data-id="${a._id}">✅ Одобрить</button><button class="secondary" data-act="reject" data-id="${a._id}">❌</button>`}
         <button class="wa" data-act="wa-client" data-id="${a._id}">💬 Клиенту</button>
         <button class="secondary" data-act="wa-me" data-id="${a._id}">📤 Мне</button>
@@ -241,14 +321,14 @@
     const buttons = (i) => `<td class="actions"><button data-act="edit" data-id="${i._id}">✏️ Изменить</button><button class="danger" data-act="del" data-id="${i._id}">🗑 Удалить</button></td>`;
     const shown = (i) => `<span class="badge ${i.active ? 'on' : 'off'}">${i.active ? 'на сайте' : 'скрыт'}</span>`;
     if (kind === 'courses') {
-      const rows = items.map((c) => `<tr><td>${esc(c.title)}</td>
-        <td>${c.discountActive ? `<s>${money(c.price)}</s> ${money(c.finalPrice)}` : money(c.price)}</td>
-        <td>${c.discountActive ? `<span class="badge sale">-${c.discountPercent}%${c.discountEndsAt ? ' до ' + new Date(c.discountEndsAt).toLocaleDateString('ru-RU') : ''}</span>` : '—'}</td>
-        <td>${c.totalSeats > 0 ? `${c.seatsLeft} из ${c.totalSeats}` : 'не отслеживаются'}</td>
-        <td>${shown(c)}</td>${buttons(c)}</tr>`).join('');
+      const rows = items.map((c) => `<tr><td data-label="Тур">${esc(c.title)}</td>
+        <td data-label="Цена">${c.discountActive ? `<s>${money(c.price)}</s> ${money(c.finalPrice)}` : money(c.price)}</td>
+        <td data-label="Скидка">${c.discountActive ? `<span class="badge sale">-${c.discountPercent}%${c.discountEndsAt ? ' до ' + new Date(c.discountEndsAt).toLocaleDateString('ru-RU') : ''}</span>` : '—'}</td>
+        <td data-label="Места">${c.totalSeats > 0 ? `${c.seatsLeft} из ${c.totalSeats}` : 'не отслеживаются'}</td>
+        <td data-label="Статус">${shown(c)}</td>${buttons(c)}</tr>`).join('');
       return add + table(['Тур','Цена','Скидка','Места','Статус',''], rows);
     }
-    const rows = items.map((t) => `<tr><td>${esc(t.name)}</td><td>${esc(t.role)}</td><td>${esc((t.languages || []).join(', '))}</td><td>${shown(t)}</td>${buttons(t)}</tr>`).join('');
+    const rows = items.map((t) => `<tr><td data-label="Имя">${esc(t.name)}</td><td data-label="Должность">${esc(t.role)}</td><td data-label="Языки">${esc((t.languages || []).join(', '))}</td><td data-label="Статус">${shown(t)}</td>${buttons(t)}</tr>`).join('');
     return add + table(['Имя','Должность','Языки','Статус',''], rows);
   }
 
@@ -279,19 +359,19 @@
     const a = findApp(id);
     const win = localStorage.getItem('ihsan_open_wa') !== 'false' ? window.open('', '_blank') : null; // открываем до запроса
     try {
-      const r = await api('/api/applications/' + id + '/status', { method: 'PATCH', body: JSON.stringify({ status: 'approved' }) });
+      const r = await api('/api/bookings/' + id + '/status', { method: 'PATCH', body: JSON.stringify({ status: 'approved' }) });
       if (win) win.location.href = waLink(a.phone, 'Здравствуйте, ' + a.name + '! Ваша бронь тура «' + a.tour + '» в TourCo подтверждена. Мы свяжемся с вами, чтобы согласовать детали поездки.');
       if (r.sms && r.sms.attempted) alert(r.sms.ok ? 'SMS клиенту отправлена.\n' + String(r.sms.raw || '').slice(0, 300) : 'SMS клиенту НЕ отправилась:\n' + r.sms.error);
       load();
     } catch (err) { if (win) win.close(); alert(err.message); }
   }
   async function setStatus(id, status) {
-    try { await api('/api/applications/' + id + '/status', { method: 'PATCH', body: JSON.stringify({ status }) }); load(); }
+    try { await api('/api/bookings/' + id + '/status', { method: 'PATCH', body: JSON.stringify({ status }) }); load(); }
     catch (err) { alert(err.message); }
   }
   async function removeApplication(id) {
     if (!confirm('Удалить эту бронь безвозвратно?')) return;
-    try { await api('/api/applications/' + id, { method: 'DELETE' }); load(); } catch (err) { alert(err.message); }
+    try { await api('/api/bookings/' + id, { method: 'DELETE' }); load(); } catch (err) { alert(err.message); }
   }
   function waClient(id) {
     const a = findApp(id);
@@ -347,7 +427,8 @@
     try { await api(ENDPOINT[tab] + '/' + id, { method: 'DELETE' }); load(); } catch (err) { alert(err.message); }
   }
   async function seed() {
-    try { await api('/api/admin/seed/' + tab, { method: 'POST' }); load(); } catch (err) { alert(err.message); }
+    const kind = { courses: 'tours', teachers: 'guides' }[tab];
+    try { await api('/api/admin/seed/' + kind, { method: 'POST' }); load(); } catch (err) { alert(err.message); }
   }
 
   if (token) start(); else $('#login').classList.remove('hidden');

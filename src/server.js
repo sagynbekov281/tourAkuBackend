@@ -11,7 +11,12 @@ const { notFound, errorHandler } = require("./middleware/errorHandler");
 const app = express();
 app.use(express.json());
 
-const allowedOrigins = (process.env.CLIENT_ORIGIN || "").split(",").map((o) => o.trim()).filter(Boolean);
+const productionClientOrigin = "https://tour-aku.vercel.app";
+const configuredOrigins = (process.env.CLIENT_ORIGIN || "")
+  .split(",")
+  .map((origin) => origin.trim().replace(/\/+$/, ""))
+  .filter(Boolean);
+const allowedOrigins = [...new Set([productionClientOrigin, ...configuredOrigins])];
 const localhostRegex = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
 
 app.use(
@@ -33,6 +38,7 @@ app.use(
 app.get("/health", (req, res) => res.json({ ok: true, time: new Date().toISOString() }));
 
 app.use(express.static(path.join(__dirname, "../public")));
+app.get("/admin.htm", (req, res) => res.redirect(301, "/admin.html"));
 
 app.use("/api/bookings", bookingsRouter);
 app.use("/api/admin", adminRouter);
