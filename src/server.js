@@ -36,6 +36,12 @@ app.use(
   })
 );
 
+// Браузер всегда спрашивает сервер, не изменились ли данные (ETag вернёт 304, если нет)
+app.use("/api", (req, res, next) => {
+  if (req.method === "GET") res.set("Cache-Control", "no-cache");
+  next();
+});
+
 app.get("/health", (req, res) => res.json({ ok: true, time: new Date().toISOString() }));
 
 app.use(express.static(path.join(__dirname, "../public")));
