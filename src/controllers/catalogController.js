@@ -41,6 +41,7 @@ function tourFromBody(b) {
   return {
     title: str(b.title, 120),
     titleEn: str(b.titleEn, 120),
+    photo: str(b.photo, 500000),
     destination: str(b.destination, 120),
     destinationEn: str(b.destinationEn, 120),
     description: str(b.description, 1000),
@@ -78,6 +79,7 @@ function tourPublic(t, lang) {
   return {
     id: String(t._id),
     title: pick(t.title, t.titleEn, lang),
+    photo: t.photo || "",
     destination: pick(t.destination, t.destinationEn, lang),
     description: pick(t.description, t.descriptionEn, lang),
     about: pick(t.about, t.aboutEn, lang),
@@ -99,19 +101,22 @@ function tourPublic(t, lang) {
   };
 }
 
-// ---- Гиды ----
+// ---- Команда ----
 const guideFromBody = (b) => ({
   name: str(b.name, 120),
   role: str(b.role, 120),
   roleEn: str(b.roleEn, 120),
   experience: str(b.experience, 120),
   experienceEn: str(b.experienceEn, 120),
+  photo: str(b.photo, 500000),
   languages: list(b.languages),
   languagesEn: list(b.languagesEn),
   regions: list(b.regions),
   regionsEn: list(b.regionsEn),
   bio: str(b.bio, 2000),
   bioEn: str(b.bioEn, 2000),
+  about: str(b.about, 5000),
+  aboutEn: str(b.aboutEn, 5000),
   order: num(b.order),
   active: bool(b.active),
 });
@@ -126,6 +131,8 @@ const guidePublic = (g, lang) => ({
   languages: pick(g.languages, g.languagesEn, lang),
   regions: pick(g.regions, g.regionsEn, lang),
   bio: pick(g.bio, g.bioEn, lang),
+  about: pick(g.about, g.aboutEn, lang),
+  photo: g.photo || "",
   initials: initials(g.name),
 });
 

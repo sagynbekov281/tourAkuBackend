@@ -2,7 +2,7 @@ const fetch = require("node-fetch");
 
 /**
  * Нормализует номер телефона Кыргызстана в формат 996XXXXXXXXX (12 цифр, без +).
- * Принимает варианты: +996700123456, 996700123456, 0700123456, 0 700 123 456 и т.п.
+ * Принимает варианты: +996700469989, 996700469989, 0700469989, 0 700 46 99 89 и т.п.
  */
 function normalizeKgPhone(rawPhone) {
   const digits = String(rawPhone).replace(/\D/g, "");
@@ -14,7 +14,7 @@ function normalizeKgPhone(rawPhone) {
     return "996" + digits.slice(1);
   }
   if (digits.length === 9) {
-    // например 700123456
+    // например 700469989
     return "996" + digits;
   }
   return null; // не похоже на кыргызский номер
@@ -112,7 +112,7 @@ async function sendViaNikita(phone, text) {
 async function sendViaSmsc(phone, text) {
   const login = process.env.SMSC_LOGIN;
   const password = process.env.SMSC_PASSWORD;
-  const sender = process.env.SMSC_SENDER || "TourCo";
+  const sender = process.env.SMSC_SENDER || "KHAN-TENGRI";
 
   if (!login || !password) {
     throw new Error("SMSC_LOGIN / SMSC_PASSWORD не заданы в .env");

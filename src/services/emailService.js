@@ -11,7 +11,7 @@ async function notifyManager(booking) {
   }
 
   const html = `
-    <h2>Новая бронь тура — TourCo</h2>
+    <h2>Новая бронь тура — KHAN - TENGRI</h2>
     <p><b>Имя:</b> ${escapeHtml(booking.name)}</p>
     <p><b>Телефон:</b> +${escapeHtml(booking.phone)}</p>
     <p><b>Тур:</b> ${escapeHtml(booking.tour)}</p>

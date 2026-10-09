@@ -62,7 +62,7 @@ async function createBooking(req, res) {
     });
     console.info("[bookings] Новая бронь сохранена; ожидает SMS-подтверждения");
 
-    const smsText = `TourCo: vash kod podtverzhdeniya - ${otpCode}. Kod deystvitelen ${OTP_TTL_MINUTES} minut.`;
+    const smsText = `KHAN-TENGRI: vash kod podtverzhdeniya - ${otpCode}. Kod deystvitelen ${OTP_TTL_MINUTES} minut.`;
 
     try {
       const smsResult = await sendSms(phone, smsText);
@@ -134,7 +134,7 @@ async function resendOtp(req, res) {
     booking.otpExpiresAt = new Date(Date.now() + OTP_TTL_MINUTES * 60 * 1000);
     booking.otpAttempts = 0;
 
-    const smsText = `TourCo: vash kod podtverzhdeniya - ${otpCode}. Kod deystvitelen ${OTP_TTL_MINUTES} minut.`;
+    const smsText = `KHAN-TENGRI: vash kod podtverzhdeniya - ${otpCode}. Kod deystvitelen ${OTP_TTL_MINUTES} minut.`;
 
     try {
       const smsResult = await sendSms(booking.phone, smsText);
@@ -224,7 +224,7 @@ async function updateBookingStatus(req, res) {
     let sms = { attempted: false };
     if (status === "approved" && !wasApproved && SMS_ON_APPROVE) {
       const firstWord = booking.name.split(" ")[0] || booking.name;
-      const text = `TourCo: ${firstWord}, ваша бронь на тур "${booking.tour}" одобрена! Менеджер свяжется с вами.`;
+      const text = `KHAN-TENGRI: ${firstWord}, ваша бронь на тур "${booking.tour}" одобрена! Менеджер свяжется с вами.`;
       try {
         const result = await sendSms(booking.phone, text);
         console.log("[sms] Ответ провайдера (одобрение):", JSON.stringify(result));

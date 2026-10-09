@@ -5,6 +5,7 @@ const tourSchema = new mongoose.Schema(
     // ---- Переводимые поля: RU (основные) + EN (необязательные, с откатом на RU) ----
     title: { type: String, required: true, trim: true, maxlength: 120 },
     titleEn: { type: String, trim: true, maxlength: 120, default: "" },
+    photo: { type: String, trim: true, maxlength: 500000, default: "" },
     destination: { type: String, trim: true, maxlength: 120, default: "" },
     destinationEn: { type: String, trim: true, maxlength: 120, default: "" },
     description: { type: String, trim: true, maxlength: 1000, default: "" },
