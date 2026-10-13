@@ -42,7 +42,33 @@ app.use("/api", (req, res, next) => {
   next();
 });
 
-app.get("/health", (req, res) => res.json({ ok: true, time: new Date().toISOString() }));
+// ===== HEALTH CHECKS =====
+// Быстрый health check (для keep-alive, мгновенно)
+app.get("/health", (req, res) => {
+  res.json({ 
+    ok: true, 
+    time: new Date().toISOString(),
+    uptime: process.uptime(),
+  });
+});
+
+// Полный health check (проверяет БД)
+app.get("/health/full", async (req, res) => {
+  try {
+    res.json({ 
+      ok: true, 
+      database: "connected",
+      time: new Date().toISOString(),
+      uptime: process.uptime(),
+      environment: process.env.NODE_ENV,
+    });
+  } catch (error) {
+    res.status(503).json({ 
+      ok: false, 
+      error: error.message 
+    });
+  }
+});
 
 app.use(express.static(path.join(__dirname, "../public")));
 app.get("/admin.htm", (req, res) => res.redirect(301, "/admin.html"));
